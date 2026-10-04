@@ -243,7 +243,98 @@
   if (modalScrim) modalScrim.addEventListener("click", closeModal);
 
   /* ------------------------------------------------------------------
-     8. Multi-step form
+     8. Enquiry submission (server-backed)
+     Client validation is a convenience; the server re-validates everything.
+  ------------------------------------------------------------------ */
+
+  function statusEl(form) { return $("[data-form-status]", form); }
+
+  function setStatus(form, type, message) {
+    const el = statusEl(form);
+    if (!el) return;
+    el.hidden = !message;
+    el.textContent = message || "";
+    el.classList.remove("form-status--error", "form-status--success");
+    if (type) el.classList.add("form-status--" + type);
+  }
+
+  function fieldWrap(form, name) {
+    const input = form.querySelector(`[name="${name}"]`);
+    if (!input) return null;
+    return { input, wrap: input.closest(".field") || input.closest(".check") || input };
+  }
+
+  function clearFieldErrors(form) {
+    $$(".field--error", form).forEach((w) => w.classList.remove("field--error"));
+    $$(".field__error", form).forEach((e) => e.remove());
+  }
+
+  function applyFieldErrors(form, errors) {
+    clearFieldErrors(form);
+    Object.entries(errors || {}).forEach(([name, msg]) => {
+      const found = fieldWrap(form, name);
+      if (!found) return;
+      found.wrap.classList.add("field--error");
+      const note = document.createElement("span");
+      note.className = "field__error";
+      note.textContent = msg;
+      (found.wrap.classList.contains("field") || found.wrap.classList.contains("check")
+        ? found.wrap
+        : found.input.parentElement
+      ).appendChild(note);
+    });
+  }
+
+  function collect(form) {
+    const data = {};
+    new FormData(form).forEach((value, key) => {
+      if (key === "consent") data[key] = value === "on" || value === "true";
+      else if (value !== "") data[key] = value;
+    });
+    return data;
+  }
+
+  async function submitEnquiry(form, onSuccess) {
+    const endpoint = form.getAttribute("data-endpoint") || "/api/enquiries";
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const original = submitBtn ? submitBtn.textContent : "";
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "Sending…"; }
+    setStatus(form, null, "");
+
+    try {
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(collect(form)),
+      });
+      let payload = {};
+      try { payload = await res.json(); } catch { /* non-JSON response */ }
+
+      if (res.ok && payload.ok) {
+        setStatus(form, "success", payload.message || "Thank you — your enquiry has been received.");
+        if (onSuccess) onSuccess(payload);
+        return;
+      }
+      if (res.status === 422 && payload.errors) {
+        applyFieldErrors(form, payload.errors);
+        setStatus(form, "error", payload.message || "Please check the highlighted fields and try again.");
+        if (onSuccess) onSuccess(payload, true);
+        return;
+      }
+      if (res.status === 429) {
+        setStatus(form, "error", payload.message || "Too many enquiries. Please try again later.");
+        return;
+      }
+      setStatus(form, "error", payload.message || "Something went wrong. Please try again or email reservations@tengilemalamala.com.");
+    } catch {
+      setStatus(form, "error", "We could not reach the server. Please check your connection and try again.");
+    } finally {
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = original; }
+    }
+  }
+
+  /* ------------------------------------------------------------------
+     8a. Multi-step form
   ------------------------------------------------------------------ */
   $$("[data-steps]").forEach((form) => {
     const panels = $$(".step-panel", form);
@@ -267,6 +358,7 @@
       const back = e.target.closest("[data-back]");
       if (next) {
         e.preventDefault();
+        setStatus(form, null, "");
         const active = panels[current];
         const required = $$("input[required], select[required], textarea[required]", active);
         const invalid = required.find((f) => !f.checkValidity());
@@ -279,12 +371,24 @@
     form.addEventListener("submit", (e) => {
       e.preventDefault();
       if (!form.checkValidity()) { form.reportValidity(); return; }
-      const success = form.parentElement.querySelector(".form-success");
-      if (success) {
-        form.classList.add("hidden");
-        success.classList.add("is-visible");
-        stepMarkers.forEach((m) => m.classList.add("is-done"));
-      }
+      submitEnquiry(form, (payload, isError) => {
+        if (isError) {
+          // Jump to the earliest panel that contains an error field.
+          const names = Object.keys(payload.errors || {});
+          for (let i = 0; i < panels.length; i++) {
+            if (names.some((n) => panels[i].querySelector(`[name="${n}"]`))) {
+              current = i; paint(true); break;
+            }
+          }
+          return;
+        }
+        const success = form.parentElement.querySelector(".form-success");
+        if (success) {
+          form.classList.add("hidden");
+          success.classList.add("is-visible");
+          stepMarkers.forEach((m) => m.classList.add("is-done"));
+        }
+      });
     });
 
     paint();
@@ -297,8 +401,11 @@
     form.addEventListener("submit", (e) => {
       e.preventDefault();
       if (!form.checkValidity()) { form.reportValidity(); return; }
-      const success = form.parentElement.querySelector(".form-success");
-      if (success) { form.classList.add("hidden"); success.classList.add("is-visible"); }
+      submitEnquiry(form, (payload, isError) => {
+        if (isError) return;
+        const success = form.parentElement.querySelector(".form-success");
+        if (success) { form.classList.add("hidden"); success.classList.add("is-visible"); }
+      });
     });
   });
 

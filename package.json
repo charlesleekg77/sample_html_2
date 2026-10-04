@@ -1,0 +1,19 @@
+{
+  "name": "tengile-malamala-enquiries",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Server-side enquiry endpoint and static host for the Tengile MalaMala Collection website.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "helmet": "^8.0.0",
+    "pg": "^8.13.1"
+  }
+}

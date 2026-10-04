@@ -83,17 +83,19 @@
             <div class="steps__item"><span class="n">3</span>Final Details</div>
           </div>
 
-          <form class="form-grid" data-steps>
+          <form class="form-grid" data-steps data-endpoint="/api/enquiries" novalidate>
+            <input type="hidden" name="source" value="plan-your-stay" />
+            <div class="form-status" data-form-status role="status" aria-live="polite" hidden></div>
             <div class="step-panel is-active">
               <div class="form-grid form-grid--2">
-                <div class="field"><label for="p-arrive">Arrival date</label><input id="p-arrive" type="date" required /></div>
-                <div class="field"><label for="p-depart">Departure date</label><input id="p-depart" type="date" required /></div>
+                <div class="field"><label for="p-arrive">Arrival date</label><input id="p-arrive" name="arrival_date" type="date" required /></div>
+                <div class="field"><label for="p-depart">Departure date</label><input id="p-depart" name="departure_date" type="date" required /></div>
                 <div class="field"><label for="p-adults">Adults</label>
-                  <select id="p-adults"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5+</option></select></div>
+                  <select id="p-adults" name="adults"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5+</option></select></div>
                 <div class="field"><label for="p-children">Children</label>
-                  <select id="p-children"><option selected>0</option><option>1</option><option>2</option><option>3+</option></select></div>
+                  <select id="p-children" name="children"><option selected>0</option><option>1</option><option>2</option><option>3+</option></select></div>
                 <div class="field field--full"><label for="p-flex">Flexibility</label>
-                  <select id="p-flex"><option>Exact dates</option><option>&plusmn; 3 days</option><option>&plusmn; 1 week</option><option>Flexible</option></select></div>
+                  <select id="p-flex" name="flexibility"><option>Exact dates</option><option>&plusmn; 3 days</option><option>&plusmn; 1 week</option><option>Flexible</option></select></div>
               </div>
               <div class="step-actions"><span></span><button type="button" class="btn btn--box" data-next>Continue</button></div>
             </div>
@@ -101,7 +103,7 @@
             <div class="step-panel">
               <div class="form-grid form-grid--2">
                 <div class="field field--full"><label for="p-lodge">Lodge or camp preference</label>
-                  <select id="p-lodge" required>
+                  <select id="p-lodge" name="lodge" required>
                     <option value="">Please select&hellip;</option>
                     <option>Tengile River Lodge</option>
                     <option>Rattray&rsquo;s Lodge</option>
@@ -111,20 +113,20 @@
                     <option>No preference — recommend for me</option>
                   </select></div>
                 <div class="field field--full"><label for="p-transfer">Transfer requirements</label>
-                  <select id="p-transfer"><option>Light aircraft from MQP</option><option>Road transfer</option><option>Self-drive</option><option>Arrange for me</option></select></div>
-                <div class="field field--full"><label for="p-experiences">Experiences of interest</label><textarea id="p-experiences" placeholder="Photography hide, wellness, walking safari, celebration&hellip;"></textarea></div>
+                  <select id="p-transfer" name="transfer"><option>Light aircraft from MQP</option><option>Road transfer</option><option>Self-drive</option><option>Arrange for me</option></select></div>
+                <div class="field field--full"><label for="p-experiences">Experiences of interest</label><textarea id="p-experiences" name="experiences" placeholder="Photography hide, wellness, walking safari, celebration&hellip;"></textarea></div>
               </div>
               <div class="step-actions"><button type="button" class="btn" data-back>&larr; Back</button><button type="button" class="btn btn--box" data-next>Continue</button></div>
             </div>
 
             <div class="step-panel">
               <div class="form-grid form-grid--2">
-                <div class="field"><label for="p-name">Full name</label><input id="p-name" type="text" required /></div>
-                <div class="field"><label for="p-email">Email</label><input id="p-email" type="email" required /></div>
-                <div class="field"><label for="p-phone">Phone</label><input id="p-phone" type="tel" /></div>
-                <div class="field"><label for="p-country">Country of residence</label><input id="p-country" type="text" /></div>
-                <div class="field field--full"><label for="p-notes">Special notes</label><textarea id="p-notes" placeholder="Dietary needs, accessibility, celebrations, anniversaries&hellip;"></textarea></div>
-                <label class="check field--full"><input type="checkbox" required /> I agree to be contacted about my enquiry.</label>
+                <div class="field"><label for="p-name">Full name</label><input id="p-name" name="full_name" type="text" required /></div>
+                <div class="field"><label for="p-email">Email</label><input id="p-email" name="email" type="email" required /></div>
+                <div class="field"><label for="p-phone">Phone</label><input id="p-phone" name="phone" type="tel" /></div>
+                <div class="field"><label for="p-country">Country of residence</label><input id="p-country" name="country" type="text" /></div>
+                <div class="field field--full"><label for="p-notes">Special notes</label><textarea id="p-notes" name="notes" placeholder="Dietary needs, accessibility, celebrations, anniversaries&hellip;"></textarea></div>
+                <label class="check field--full"><input type="checkbox" name="consent" required /> I agree to be contacted about my enquiry.</label>
               </div>
               <div class="step-actions"><button type="button" class="btn" data-back>&larr; Back</button><button type="submit" class="btn btn--box">Submit Enquiry</button></div>
             </div>
@@ -196,15 +198,17 @@
     <p class="eyebrow">Enquire</p>
     <h2 id="enquiry-title" class="mt-s">Begin your safari</h2>
     <p class="modal__intro">Share a few details and our travel specialists will be in touch within one business day.</p>
-    <form class="form-grid form-grid--2 mt-l" data-enquiry-quick>
-      <div class="field"><label for="m-name">Full name</label><input id="m-name" type="text" required /></div>
-      <div class="field"><label for="m-email">Email</label><input id="m-email" type="email" required /></div>
-      <div class="field"><label for="m-arrive">Arrival</label><input id="m-arrive" type="date" /></div>
+    <form class="form-grid form-grid--2 mt-l" data-enquiry-quick data-endpoint="/api/enquiries" novalidate>
+      <input type="hidden" name="source" value="quick-enquiry" />
+      <div class="form-status" data-form-status role="status" aria-live="polite" hidden></div>
+      <div class="field"><label for="m-name">Full name</label><input id="m-name" name="full_name" type="text" required /></div>
+      <div class="field"><label for="m-email">Email</label><input id="m-email" name="email" type="email" required /></div>
+      <div class="field"><label for="m-arrive">Arrival</label><input id="m-arrive" name="arrival_date" type="date" /></div>
       <div class="field"><label for="m-guests">Guests</label>
-        <select id="m-guests"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5+</option></select>
+        <select id="m-guests" name="adults"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5+</option></select>
       </div>
       <div class="field field--full"><label for="m-lodge">Preferred lodge or camp</label>
-        <select id="m-lodge">
+        <select id="m-lodge" name="lodge">
           <option>Tengile River Lodge</option>
           <option>Rattray&rsquo;s Lodge</option>
           <option>MalaMala Camp</option>
@@ -213,7 +217,7 @@
           <option>No preference</option>
         </select>
       </div>
-      <div class="field field--full"><label for="m-notes">Special notes</label><textarea id="m-notes" placeholder="Celebrations, dietary needs, transfer requirements&hellip;"></textarea></div>
+      <div class="field field--full"><label for="m-notes">Special notes</label><textarea id="m-notes" name="notes" placeholder="Celebrations, dietary needs, transfer requirements&hellip;"></textarea></div>
       <div class="field field--full"><button type="submit" class="btn btn--box">Send Enquiry</button></div>
     </form>
     <div class="form-success">

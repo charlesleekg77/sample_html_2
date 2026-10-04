@@ -575,6 +575,24 @@ body.drawer-open .scrim { opacity: 1; visibility: visible; }
 .form-success.is-visible { display: block; animation: fade .6s var(--ease); }
 .form-success h3 { font-size: var(--t-h2); }
 
+/* server submission feedback */
+.form-status {
+  grid-column: 1 / -1;
+  padding: .95em 1.2em;
+  border: 1px solid var(--line);
+  border-left-width: 3px;
+  font-size: .85rem;
+  line-height: 1.5;
+  animation: fade .4s var(--ease);
+}
+.form-status--error { border-left-color: #b3261e; color: #8a1d17; background: rgba(179, 38, 30, .05); }
+.form-status--success { border-left-color: var(--olive); color: #3f4d15; background: rgba(92, 110, 33, .07); }
+.field--error input, .field--error select, .field--error textarea { border-bottom-color: #b3261e; }
+.field__error { display: block; margin-top: .4rem; font-size: .72rem; letter-spacing: .02em; color: #b3261e; }
+.section--ink .form-status { border-color: var(--line-inv); }
+.section--ink .form-status--error { color: #f3b7b2; background: rgba(179, 38, 30, .16); }
+.section--ink .form-status--success { color: #d6e3a8; background: rgba(92, 110, 33, .2); }
+
 /* ---------- 18. Modal ---------- */
 .modal {
   position: fixed; inset: 0; z-index: 1000;

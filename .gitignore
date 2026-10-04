@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+
+# Local SQLite database (dev only) — never commit enquiry data
+*.sqlite
+*.sqlite-journal
+*.db
+data/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db

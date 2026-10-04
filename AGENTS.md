@@ -32,3 +32,11 @@ enquiry modal (`data-open-enquiry`), lightbox (`data-lightbox`), amenity filters
 ## Testing
 Serve locally, e.g. `python3 -m http.server 12000`, then click through the drawer,
 tabs, slider, filters, accordion, lightbox, modal and the 3-step enquiry form.
+
+## Enquiry backend
+`server/` holds an Express API (`POST /api/enquiries`) that validates and stores
+enquiries in Postgres (prod) or SQLite (dev, via `node:sqlite`). Run with
+`npm install && npm start` — see `DEPLOYMENT.md` for DB/hosting setup and the
+secrets checklist. DB credentials are server-side env vars only; never put them
+in browser code. Logs must never contain personal details (no names, emails,
+phones, notes or IPs) — keep the logging in `server/index.js` minimal.

@@ -166,15 +166,17 @@
     <p class="eyebrow">Enquire</p>
     <h2 id="enquiry-title" class="mt-s">Begin your safari</h2>
     <p class="modal__intro">Share a few details and our travel specialists will be in touch within one business day.</p>
-    <form class="form-grid form-grid--2 mt-l" data-enquiry-quick>
-      <div class="field"><label for="m-name">Full name</label><input id="m-name" type="text" required /></div>
-      <div class="field"><label for="m-email">Email</label><input id="m-email" type="email" required /></div>
-      <div class="field"><label for="m-arrive">Arrival</label><input id="m-arrive" type="date" /></div>
+    <form class="form-grid form-grid--2 mt-l" data-enquiry-quick data-endpoint="/api/enquiries" novalidate>
+      <input type="hidden" name="source" value="quick-enquiry" />
+      <div class="form-status" data-form-status role="status" aria-live="polite" hidden></div>
+      <div class="field"><label for="m-name">Full name</label><input id="m-name" name="full_name" type="text" required /></div>
+      <div class="field"><label for="m-email">Email</label><input id="m-email" name="email" type="email" required /></div>
+      <div class="field"><label for="m-arrive">Arrival</label><input id="m-arrive" name="arrival_date" type="date" /></div>
       <div class="field"><label for="m-guests">Guests</label>
-        <select id="m-guests"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5+</option></select>
+        <select id="m-guests" name="adults"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5+</option></select>
       </div>
       <div class="field field--full"><label for="m-lodge">Preferred lodge or camp</label>
-        <select id="m-lodge">
+        <select id="m-lodge" name="lodge">
           <option>Tengile River Lodge</option>
           <option>Rattray&rsquo;s Lodge</option>
           <option>MalaMala Camp</option>
@@ -183,7 +185,7 @@
           <option>No preference</option>
         </select>
       </div>
-      <div class="field field--full"><label for="m-notes">Special notes</label><textarea id="m-notes" placeholder="Celebrations, dietary needs, transfer requirements&hellip;"></textarea></div>
+      <div class="field field--full"><label for="m-notes">Special notes</label><textarea id="m-notes" name="notes" placeholder="Celebrations, dietary needs, transfer requirements&hellip;"></textarea></div>
       <div class="field field--full"><button type="submit" class="btn btn--box">Send Enquiry</button></div>
     </form>
     <div class="form-success">
